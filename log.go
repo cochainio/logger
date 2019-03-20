@@ -5,10 +5,14 @@ import (
 	"go.uber.org/zap/zapcore"
 )
 
-var Plain *zap.Logger
-var Sugar *zap.SugaredLogger
+var Singleton *zap.SugaredLogger
+var PlainSingleton *zap.Logger
 
-func Init(logLevel string, disableStacktrace bool) {
+func Instantiate(logLevel string, disableStacktrace bool) {
+	if Singleton != nil || PlainSingleton != nil {
+		panic("logger has been instantiated")
+	}
+
 	var level zapcore.Level
 	err := level.Set(logLevel)
 	if err != nil {
@@ -24,11 +28,11 @@ func Init(logLevel string, disableStacktrace bool) {
 	conf.Level.SetLevel(level)
 	conf.DisableStacktrace = disableStacktrace
 
-	Plain, err = conf.Build()
+	PlainSingleton, err = conf.Build()
 	if err != nil {
 		panic(err.Error())
 	}
-	Sugar = Plain.Sugar()
+	Singleton = PlainSingleton.Sugar()
 }
 
 type SugaredLogger struct {
@@ -36,7 +40,7 @@ type SugaredLogger struct {
 }
 
 func Named(name string) *SugaredLogger {
-	return &SugaredLogger{Sugar.Named(name)}
+	return &SugaredLogger{Singleton.Named(name)}
 }
 
 func (l *SugaredLogger) Event(event string) *zap.SugaredLogger {
@@ -48,89 +52,89 @@ func (l *SugaredLogger) Context(context string) *zap.SugaredLogger {
 }
 
 func Debug(args ...interface{}) {
-	Sugar.Debug(args...)
+	Singleton.Debug(args...)
 }
 
 func Info(args ...interface{}) {
-	Sugar.Info(args...)
+	Singleton.Info(args...)
 }
 
 func Warn(args ...interface{}) {
-	Sugar.Warn(args...)
+	Singleton.Warn(args...)
 }
 
 func Error(args ...interface{}) {
-	Sugar.Error(args...)
+	Singleton.Error(args...)
 }
 
 func DPanic(args ...interface{}) {
-	Sugar.DPanic(args...)
+	Singleton.DPanic(args...)
 }
 
 func Panic(args ...interface{}) {
-	Sugar.Panic(args...)
+	Singleton.Panic(args...)
 }
 
 func Fatal(args ...interface{}) {
-	Sugar.Fatal(args...)
+	Singleton.Fatal(args...)
 }
 
 func Debugf(template string, args ...interface{}) {
-	Sugar.Debugf(template, args...)
+	Singleton.Debugf(template, args...)
 }
 
 func Infof(template string, args ...interface{}) {
-	Sugar.Infof(template, args...)
+	Singleton.Infof(template, args...)
 }
 
 func Warnf(template string, args ...interface{}) {
-	Sugar.Warnf(template, args...)
+	Singleton.Warnf(template, args...)
 }
 
 func Errorf(template string, args ...interface{}) {
-	Sugar.Errorf(template, args...)
+	Singleton.Errorf(template, args...)
 }
 
 func DPanicf(template string, args ...interface{}) {
-	Sugar.DPanicf(template, args...)
+	Singleton.DPanicf(template, args...)
 }
 
 func Panicf(template string, args ...interface{}) {
-	Sugar.Panicf(template, args...)
+	Singleton.Panicf(template, args...)
 }
 
 func Fatalf(template string, args ...interface{}) {
-	Sugar.Fatalf(template, args...)
+	Singleton.Fatalf(template, args...)
 }
 
 func Debugw(msg string, keysAndValues ...interface{}) {
-	Sugar.Debugw(msg, keysAndValues...)
+	Singleton.Debugw(msg, keysAndValues...)
 }
 
 func Infow(msg string, keysAndValues ...interface{}) {
-	Sugar.Infow(msg, keysAndValues...)
+	Singleton.Infow(msg, keysAndValues...)
 }
 
 func Warnw(msg string, keysAndValues ...interface{}) {
-	Sugar.Warnw(msg, keysAndValues...)
+	Singleton.Warnw(msg, keysAndValues...)
 }
 
 func Errorw(msg string, keysAndValues ...interface{}) {
-	Sugar.Errorw(msg, keysAndValues...)
+	Singleton.Errorw(msg, keysAndValues...)
 }
 
 func DPanicw(msg string, keysAndValues ...interface{}) {
-	Sugar.DPanicw(msg, keysAndValues...)
+	Singleton.DPanicw(msg, keysAndValues...)
 }
 
 func Panicw(msg string, keysAndValues ...interface{}) {
-	Sugar.Panicw(msg, keysAndValues...)
+	Singleton.Panicw(msg, keysAndValues...)
 }
 
 func Fatalw(msg string, keysAndValues ...interface{}) {
-	Sugar.Fatalw(msg, keysAndValues...)
+	Singleton.Fatalw(msg, keysAndValues...)
 }
 
 func Sync() error {
-	return Sugar.Sync()
+	return Singleton.Sync()
 }
