@@ -8,6 +8,8 @@ import (
 var Singleton *zap.SugaredLogger
 var PlainSingleton *zap.Logger
 
+var internal *zap.SugaredLogger
+
 func Instantiate(logLevel string, disableStacktrace bool) {
 	if Singleton != nil || PlainSingleton != nil {
 		panic("logger has been instantiated")
@@ -33,6 +35,7 @@ func Instantiate(logLevel string, disableStacktrace bool) {
 		panic(err.Error())
 	}
 	Singleton = PlainSingleton.Sugar()
+	internal = PlainSingleton.WithOptions(zap.AddCallerSkip(1)).Sugar()
 }
 
 type SugaredLogger struct {
@@ -52,89 +55,89 @@ func (l *SugaredLogger) Context(context string) *zap.SugaredLogger {
 }
 
 func Debug(args ...interface{}) {
-	Singleton.Debug(args...)
+	internal.Debug(args...)
 }
 
 func Info(args ...interface{}) {
-	Singleton.Info(args...)
+	internal.Info(args...)
 }
 
 func Warn(args ...interface{}) {
-	Singleton.Warn(args...)
+	internal.Warn(args...)
 }
 
 func Error(args ...interface{}) {
-	Singleton.Error(args...)
+	internal.Error(args...)
 }
 
 func DPanic(args ...interface{}) {
-	Singleton.DPanic(args...)
+	internal.DPanic(args...)
 }
 
 func Panic(args ...interface{}) {
-	Singleton.Panic(args...)
+	internal.Panic(args...)
 }
 
 func Fatal(args ...interface{}) {
-	Singleton.Fatal(args...)
+	internal.Fatal(args...)
 }
 
 func Debugf(template string, args ...interface{}) {
-	Singleton.Debugf(template, args...)
+	internal.Debugf(template, args...)
 }
 
 func Infof(template string, args ...interface{}) {
-	Singleton.Infof(template, args...)
+	internal.Infof(template, args...)
 }
 
 func Warnf(template string, args ...interface{}) {
-	Singleton.Warnf(template, args...)
+	internal.Warnf(template, args...)
 }
 
 func Errorf(template string, args ...interface{}) {
-	Singleton.Errorf(template, args...)
+	internal.Errorf(template, args...)
 }
 
 func DPanicf(template string, args ...interface{}) {
-	Singleton.DPanicf(template, args...)
+	internal.DPanicf(template, args...)
 }
 
 func Panicf(template string, args ...interface{}) {
-	Singleton.Panicf(template, args...)
+	internal.Panicf(template, args...)
 }
 
 func Fatalf(template string, args ...interface{}) {
-	Singleton.Fatalf(template, args...)
+	internal.Fatalf(template, args...)
 }
 
 func Debugw(msg string, keysAndValues ...interface{}) {
-	Singleton.Debugw(msg, keysAndValues...)
+	internal.Debugw(msg, keysAndValues...)
 }
 
 func Infow(msg string, keysAndValues ...interface{}) {
-	Singleton.Infow(msg, keysAndValues...)
+	internal.Infow(msg, keysAndValues...)
 }
 
 func Warnw(msg string, keysAndValues ...interface{}) {
-	Singleton.Warnw(msg, keysAndValues...)
+	internal.Warnw(msg, keysAndValues...)
 }
 
 func Errorw(msg string, keysAndValues ...interface{}) {
-	Singleton.Errorw(msg, keysAndValues...)
+	internal.Errorw(msg, keysAndValues...)
 }
 
 func DPanicw(msg string, keysAndValues ...interface{}) {
-	Singleton.DPanicw(msg, keysAndValues...)
+	internal.DPanicw(msg, keysAndValues...)
 }
 
 func Panicw(msg string, keysAndValues ...interface{}) {
-	Singleton.Panicw(msg, keysAndValues...)
+	internal.Panicw(msg, keysAndValues...)
 }
 
 func Fatalw(msg string, keysAndValues ...interface{}) {
-	Singleton.Fatalw(msg, keysAndValues...)
+	internal.Fatalw(msg, keysAndValues...)
 }
 
 func Sync() error {
-	return Singleton.Sync()
+	return internal.Sync()
 }
