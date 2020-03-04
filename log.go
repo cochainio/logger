@@ -8,6 +8,7 @@ import (
 var Singleton *zap.SugaredLogger
 var PlainSingleton *zap.Logger
 
+var level zapcore.Level
 var internal *zap.SugaredLogger
 
 func Instantiate(logLevel string, disableStacktrace bool) {
@@ -15,7 +16,6 @@ func Instantiate(logLevel string, disableStacktrace bool) {
 		panic("logger has been instantiated")
 	}
 
-	var level zapcore.Level
 	err := level.Set(logLevel)
 	if err != nil {
 		panic(err.Error())
@@ -36,6 +36,10 @@ func Instantiate(logLevel string, disableStacktrace bool) {
 	}
 	Singleton = PlainSingleton.Sugar()
 	internal = PlainSingleton.WithOptions(zap.AddCallerSkip(1)).Sugar()
+}
+
+func Level() zapcore.Level {
+	return level
 }
 
 type SugaredLogger struct {
